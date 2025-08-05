@@ -1,0 +1,107 @@
+version: '3.8'
+
+services:
+  # Visualizer for Swarm cluster
+  visualizer:
+    image: dockersamples/visualizer:stable
+    ports:
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+    networks:
+      - swarm-network
+
+  # Web application with multiple replicas
+  web:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./web-content:/usr/share/nginx/html:ro
+    deploy:
+      replicas: 3
+      update_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+      placement:
+        constraints: [node.role == worker]
+    networks:
+      - swarm-network
+
+  # API service with resource limits
+  api:
+    image: httpd:alpine
+    volumes:
+      - ./api-content:/usr/local/apache2/htdocs:ro
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 128M
+        reservations:
+          cpus: '0.25'
+          memory: 64M
+      update_config:
+        parallelism: 1
+        failure_action: rollback
+      placement:
+        constraints: [node.role == worker]
+    networks:
+      - swarm-network
+
+  # Load balancer service
+  lb:
+    image: nginx:alpine
+    ports:
+      - "8081:80"
+    volumes:
+      - ./nginx-lb.conf:/etc/nginx/nginx.conf:ro
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]
+    networks:
+      - swarm-network
+    depends_on:
+      - web
+      - api
+
+  # Redis for shared state
+  redis:
+    image: redis:alpine
+    volumes:
+      - redis-data:/data
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]
+    networks:
+      - swarm-network
+
+  # Worker service for background tasks
+  worker:
+    image: alpine:latest
+    command: sh -c "while true; do echo 'Worker task running at' $(date); sleep 30; done"
+    deploy:
+      replicas: 2
+      placement:
+        preferences:
+          - spread: node.id
+    networks:
+      - swarm-network
+
+volumes:
+  redis-data:
+
+networks:
+  swarm-network:
+    driver: overlay
+    attachable: true

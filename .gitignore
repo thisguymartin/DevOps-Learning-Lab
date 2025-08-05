@@ -1,0 +1,83 @@
+# Ignore common files and folders for DevOps demos
+
+# macOS
+.DS_Store
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+venv/
+
+# Docker
+*.log
+docker-compose.override.yml
+
+# Kubernetes
+*.kubeconfig
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+
+# Secrets
+*.env
+*.secret
+
+# VS Code
+.vscode/
+
+# Misc
+*.swp
+*.swo
+.idea/
+*.bak
+
+# System
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Coverage
+coverage/
+*.lcov
+
+# Others
+*.tmp
+*.temp
+.claude
+
+# Ignore folders for demos
+caddy/tmp/
+docker-swarm/tmp/
+elk-stack/tmp/
+github-actions-runner/tmp/
+gitlab-runner/tmp/
+haproxy/tmp/
+jaeger/tmp/
+jenkins/tmp/
+kubernetes-local/tmp/
+minio/tmp/
+nginx/tmp/
+nginx-proxy-manager/tmp/
+nomad/tmp/
+portainer/tmp/
+postgresql/tmp/
+prometheus-grafana/tmp/
+redis/tmp/
+traefic-demo-1/tmp/
+traefik/tmp/
+ufw-docker/tmp/
+vault/tmp/
+watchtower/tmp/
+wireguard/tmp/

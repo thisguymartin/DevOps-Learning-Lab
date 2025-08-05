@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Web Server 2 - HAProxy</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            text-align: center; 
+            margin: 0;
+            background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container { 
+            padding: 50px; 
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
+        }
+        h1 { font-size: 3em; margin-bottom: 20px; }
+        .server-info { 
+            background: rgba(255,255,255,0.2); 
+            padding: 20px; 
+            border-radius: 10px; 
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Web Server 2</h1>
+        <div class="server-info">
+            <h3>Server Information</h3>
+            <p><strong>Container:</strong> web2</p>
+            <p><strong>Load Balancer:</strong> HAProxy</p>
+            <p><strong>Algorithm:</strong> Round Robin</p>
+        </div>
+        <p>This request was served by Web Server 2</p>
+        <p>Check HAProxy stats at :8888/stats</p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: nginx-reverse-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    networks:
+      - proxy-network
+    restart: unless-stopped
+
+  # Example backend services to proxy to
+  app1:
+    image: nginx:alpine
+    container_name: app1
+    volumes:
+      - ./app1.html:/usr/share/nginx/html/index.html:ro
+    networks:
+      - proxy-network
+    restart: unless-stopped
+
+  app2:
+    image: nginx:alpine
+    container_name: app2
+    volumes:
+      - ./app2.html:/usr/share/nginx/html/index.html:ro
+    networks:
+      - proxy-network
+    restart: unless-stopped
+
+networks:
+  proxy-network:
+    driver: bridge

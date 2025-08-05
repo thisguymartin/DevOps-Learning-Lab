@@ -1,0 +1,128 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-app
+  namespace: default
+  labels:
+    app: web-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: web-app
+  template:
+    metadata:
+      labels:
+        app: web-app
+    spec:
+      containers:
+      - name: web-app
+        image: nginx:alpine
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: web-content
+          mountPath: /usr/share/nginx/html
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      volumes:
+      - name: web-content
+        configMap:
+          name: web-content
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-app-service
+  labels:
+    app: web-app
+spec:
+  selector:
+    app: web-app
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  type: ClusterIP
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: web-content
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Kubernetes Web App</title>
+        <style>
+            body { 
+                font-family: Arial, sans-serif; 
+                text-align: center; 
+                margin: 0;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .container { 
+                padding: 60px; 
+                background: rgba(255,255,255,0.1);
+                border-radius: 20px;
+                backdrop-filter: blur(10px);
+                box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+                max-width: 600px;
+            }
+            h1 { font-size: 3.5em; margin-bottom: 20px; }
+            .info { 
+                background: rgba(255,255,255,0.2); 
+                padding: 20px; 
+                border-radius: 15px; 
+                margin: 20px 0;
+                text-align: left;
+            }
+            .feature { margin: 10px 0; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>☸️ Kubernetes</h1>
+            <div class="info">
+                <h3>Cluster Information</h3>
+                <div class="feature">📦 <strong>Pods:</strong> 3 replicas</div>
+                <div class="feature">🔄 <strong>Load Balancing:</strong> Service discovery</div>
+                <div class="feature">📊 <strong>Health Checks:</strong> Liveness & Readiness</div>
+                <div class="feature">🔧 <strong>ConfigMaps:</strong> Configuration management</div>
+            </div>
+            <div class="info">
+                <h3>Learning Features</h3>
+                <div class="feature">✅ Deployments & ReplicaSets</div>
+                <div class="feature">✅ Services & Ingress</div>
+                <div class="feature">✅ ConfigMaps & Secrets</div>
+                <div class="feature">✅ Resource Limits</div>
+            </div>
+            <p>This app demonstrates Kubernetes orchestration!</p>
+        </div>
+    </body>
+    </html>

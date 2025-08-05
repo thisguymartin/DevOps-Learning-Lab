@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  nginx-proxy-manager:
+    image: 'jc21/nginx-proxy-manager:latest'
+    container_name: nginx-proxy-manager
+    restart: unless-stopped
+    ports:
+      - '80:80'      # HTTP
+      - '443:443'    # HTTPS
+      - '81:81'      # Admin Web Interface
+    environment:
+      DB_MYSQL_HOST: "npm-db"
+      DB_MYSQL_PORT: 3306
+      DB_MYSQL_USER: "npm"
+      DB_MYSQL_PASSWORD: "npm_password"
+      DB_MYSQL_NAME: "npm"
+    volumes:
+      - npm-data:/data
+      - npm-letsencrypt:/etc/letsencrypt
+    networks:
+      - npm-network
+    depends_on:
+      - npm-db
+
+  npm-db:
+    image: 'mariadb:latest'
+    container_name: npm-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: 'root_password'
+      MYSQL_DATABASE: 'npm'
+      MYSQL_USER: 'npm'
+      MYSQL_PASSWORD: 'npm_password'
+    volumes:
+      - npm-db-data:/var/lib/mysql
+    networks:
+      - npm-network
+
+  # Example web applications to proxy
+  demo-app1:
+    image: nginx:alpine
+    container_name: demo-app1
+    volumes:
+      - ./demo-app1.html:/usr/share/nginx/html/index.html:ro
+    networks:
+      - npm-network
+    restart: unless-stopped
+
+  demo-app2:
+    image: httpd:alpine
+    container_name: demo-app2
+    volumes:
+      - ./demo-app2.html:/usr/local/apache2/htdocs/index.html:ro
+    networks:
+      - npm-network
+    restart: unless-stopped
+
+volumes:
+  npm-data:
+  npm-letsencrypt:
+  npm-db-data:
+
+networks:
+  npm-network:
+    driver: bridge

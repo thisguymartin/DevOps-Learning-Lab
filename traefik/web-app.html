@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Load Balanced Web App</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            text-align: center; 
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container { 
+            padding: 60px; 
+            background: rgba(255,255,255,0.15);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+        h1 { font-size: 3.5em; margin-bottom: 20px; }
+        p { font-size: 1.3em; margin: 15px 0; }
+        .info { 
+            background: rgba(255,255,255,0.2); 
+            padding: 15px; 
+            border-radius: 10px; 
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚖️ Load Balanced App</h1>
+        <p>This service has multiple replicas behind Traefik</p>
+        <div class="info">
+            <strong>Access:</strong> https://web.localhost
+        </div>
+        <div class="info">
+            <strong>Load Balancer:</strong> Traefik (Round Robin)
+        </div>
+        <p>Refresh the page to see different container instances</p>
+        <p>Check Traefik dashboard for service health</p>
+    </div>
+</body>
+</html>

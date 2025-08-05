@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Monitoring Demo - API</title>
+    <style>
+        body { 
+            font-family: 'Courier New', monospace; 
+            text-align: center; 
+            margin: 0;
+            background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+            color: #68d391;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container { 
+            padding: 50px; 
+            background: rgba(0,0,0,0.4);
+            border-radius: 15px;
+            border: 2px solid #68d391;
+            box-shadow: 0 0 20px rgba(104, 211, 145, 0.3);
+        }
+        h1 { font-size: 3em; margin-bottom: 20px; }
+        .api-info { 
+            background: rgba(104, 211, 145, 0.1); 
+            padding: 20px; 
+            border-radius: 10px; 
+            margin: 20px 0;
+            border-left: 4px solid #68d391;
+            text-align: left;
+        }
+        .json {
+            background: rgba(0,0,0,0.5);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-size: 14px;
+            text-align: left;
+        }
+        .status { color: #68d391; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 API Service</h1>
+        <div class="api-info">
+            <h3>Service Information</h3>
+            <p><strong>Service:</strong> Demo API</p>
+            <p><strong>Engine:</strong> Apache HTTP Server</p>
+            <p><strong>Port:</strong> 8082</p>
+            <p><strong>Monitoring:</strong> <span class="status">Enabled</span></p>
+        </div>
+        
+        <div class="json">
+{<br>
+&nbsp;&nbsp;"service": "demo-api",<br>
+&nbsp;&nbsp;"status": "healthy",<br>
+&nbsp;&nbsp;"monitoring": true,<br>
+&nbsp;&nbsp;"metrics_endpoint": "/metrics",<br>
+&nbsp;&nbsp;"timestamp": "<span id="timestamp"></span>",<br>
+&nbsp;&nbsp;"uptime": "<span id="uptime"></span>s",<br>
+&nbsp;&nbsp;"requests_total": <span id="requests">0</span>,<br>
+&nbsp;&nbsp;"response_time_avg": "45ms",<br>
+&nbsp;&nbsp;"alerts": []<br>
+}
+        </div>
+        
+        <div class="api-info">
+            <h3>Available Metrics</h3>
+            <p>• HTTP request count and duration</p>
+            <p>• System resource usage</p>
+            <p>• Application-specific metrics</p>
+            <p>• Health check status</p>
+        </div>
+        
+        <p>This API service is monitored by Prometheus</p>
+    </div>
+    
+    <script>
+        let startTime = Date.now();
+        let requests = 0;
+        
+        function updateMetrics() {
+            document.getElementById('timestamp').textContent = new Date().toISOString();
+            document.getElementById('uptime').textContent = Math.floor((Date.now() - startTime) / 1000);
+            document.getElementById('requests').textContent = ++requests;
+        }
+        
+        updateMetrics();
+        setInterval(updateMetrics, 5000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Secure Web Application</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            text-align: center; 
+            margin: 0;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container { 
+            padding: 60px; 
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            max-width: 600px;
+        }
+        h1 { font-size: 3.5em; margin-bottom: 20px; }
+        .security-info { 
+            background: rgba(255,255,255,0.2); 
+            padding: 20px; 
+            border-radius: 15px; 
+            margin: 20px 0;
+            text-align: left;
+        }
+        .feature { margin: 10px 0; }
+        .port { 
+            font-family: 'Courier New', monospace; 
+            font-weight: bold; 
+            color: #f39c12;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔒 Secure Web App</h1>
+        
+        <div class="security-info">
+            <h3>🛡️ Security Features</h3>
+            <div class="feature">🔥 UFW Firewall Protection</div>
+            <div class="feature">🌐 Isolated Docker Network</div>
+            <div class="feature">🚪 Controlled Port Access</div>
+            <div class="feature">📊 Security Monitoring</div>
+        </div>
+        
+        <div class="security-info">
+            <h3>🔌 Network Configuration</h3>
+            <div class="feature"><strong>Web App:</strong> <span class="port">:8080</span></div>
+            <div class="feature"><strong>API:</strong> <span class="port">:8081</span></div>
+            <div class="feature"><strong>SSH:</strong> <span class="port">:2222</span></div>
+            <div class="feature"><strong>Monitor:</strong> <span class="port">:9100</span></div>
+            <div class="feature"><strong>Database:</strong> Internal Only</div>
+        </div>
+        
+        <div class="security-info">
+            <h3>🚨 Firewall Rules Active</h3>
+            <p>This application is protected by UFW firewall rules. Access is controlled and monitored.</p>
+        </div>
+        
+        <p>Test security configurations and firewall rules!</p>
+        <p><small>Access API: <a href="http://localhost:8081" style="color: #f39c12;">localhost:8081</a></small></p>
+    </div>
+</body>
+</html>

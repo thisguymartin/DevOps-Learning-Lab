@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Traefik Demo - NGINX</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            text-align: center; 
+            margin: 0;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container { 
+            padding: 60px; 
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+        h1 { font-size: 3.5em; margin-bottom: 20px; }
+        p { font-size: 1.3em; margin: 15px 0; }
+        .route { 
+            background: rgba(255,255,255,0.2); 
+            padding: 10px; 
+            border-radius: 10px; 
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌟 Traefik Path Routing</h1>
+        <p>This is served by NGINX through Traefik</p>
+        <div class="route">
+            <strong>Route:</strong> demo.localhost/nginx
+        </div>
+        <p>Traefik stripped the /nginx prefix and forwarded to this container</p>
+        <p>Container: nginx-demo</p>
+    </div>
+</body>
+</html>

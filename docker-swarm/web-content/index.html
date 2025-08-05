@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Docker Swarm Web Service</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            text-align: center; 
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container { 
+            padding: 60px; 
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        h1 { font-size: 3.5em; margin-bottom: 20px; }
+        .info { 
+            background: rgba(255,255,255,0.2); 
+            padding: 20px; 
+            border-radius: 15px; 
+            margin: 20px 0;
+        }
+        .hostname { 
+            font-family: 'Courier New', monospace; 
+            font-weight: bold; 
+            color: #ffeaa7;
+        }
+    </style>
+    <script>
+        function updateHostname() {
+            fetch('/hostname')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('hostname').textContent = data;
+                })
+                .catch(() => {
+                    document.getElementById('hostname').textContent = 'Unknown';
+                });
+        }
+        setInterval(updateHostname, 5000);
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>🐳 Docker Swarm</h1>
+        <div class="info">
+            <h3>Web Service Replica</h3>
+            <p><strong>Container ID:</strong> <span id="hostname" class="hostname">Loading...</span></p>
+            <p><strong>Service:</strong> web</p>
+            <p><strong>Replicas:</strong> 3</p>
+        </div>
+        <div class="info">
+            <h3>Swarm Features</h3>
+            <p>✅ Load Balancing</p>
+            <p>✅ Service Discovery</p>
+            <p>✅ Rolling Updates</p>
+            <p>✅ Health Checks</p>
+        </div>
+        <p>Refresh to see different container instances!</p>
+        <p>Check Visualizer: <a href="http://localhost:8080" style="color: #ffeaa7;">localhost:8080</a></p>
+    </div>
+    
+    <script>
+        // Set initial hostname to container hostname
+        document.getElementById('hostname').textContent = window.location.hostname || 'localhost';
+    </script>
+</body>
+</html>

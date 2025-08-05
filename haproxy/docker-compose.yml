@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  haproxy:
+    image: haproxy:2.8-alpine
+    container_name: haproxy-lb
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8888:8888"  # HAProxy Stats
+    volumes:
+      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+      - ./ssl:/etc/ssl/certs:ro
+    networks:
+      - haproxy-network
+    restart: unless-stopped
+    depends_on:
+      - web1
+      - web2
+      - web3
+
+  # Backend web servers
+  web1:
+    image: nginx:alpine
+    container_name: web1
+    volumes:
+      - ./web1.html:/usr/share/nginx/html/index.html:ro
+    networks:
+      - haproxy-network
+    restart: unless-stopped
+
+  web2:
+    image: nginx:alpine
+    container_name: web2
+    volumes:
+      - ./web2.html:/usr/share/nginx/html/index.html:ro
+    networks:
+      - haproxy-network
+    restart: unless-stopped
+
+  web3:
+    image: nginx:alpine
+    container_name: web3
+    volumes:
+      - ./web3.html:/usr/share/nginx/html/index.html:ro
+    networks:
+      - haproxy-network
+    restart: unless-stopped
+
+  # API backend servers
+  api1:
+    image: httpd:alpine
+    container_name: api1
+    volumes:
+      - ./api1.html:/usr/local/apache2/htdocs/index.html:ro
+    networks:
+      - haproxy-network
+    restart: unless-stopped
+
+  api2:
+    image: httpd:alpine
+    container_name: api2
+    volumes:
+      - ./api2.html:/usr/local/apache2/htdocs/index.html:ro
+    networks:
+      - haproxy-network
+    restart: unless-stopped
+
+networks:
+  haproxy-network:
+    driver: bridge

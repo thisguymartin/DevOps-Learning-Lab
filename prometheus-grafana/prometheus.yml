@@ -1,0 +1,64 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  - "alerts/*.yml"
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - alertmanager:9093
+
+scrape_configs:
+  # Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Node Exporter for system metrics
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']
+
+  # cAdvisor for container metrics
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['cadvisor:8080']
+
+  # Demo applications
+  - job_name: 'demo-web-app'
+    static_configs:
+      - targets: ['web-app:80']
+    metrics_path: /metrics
+    scrape_interval: 30s
+
+  - job_name: 'demo-api-app'
+    static_configs:
+      - targets: ['api-app:80']
+    metrics_path: /metrics
+    scrape_interval: 30s
+
+  # Docker daemon metrics (if enabled)
+  - job_name: 'docker'
+    static_configs:
+      - targets: ['host.docker.internal:9323']
+    scrape_interval: 30s
+
+  # Service discovery example (Docker Swarm)
+  - job_name: 'dockerswarm-containers'
+    dockerswarm_sd_configs:
+      - host: unix:///var/run/docker.sock
+        role: containers
+    relabel_configs:
+      - source_labels: [__meta_dockerswarm_container_label_prometheus_io_scrape]
+        action: keep
+        regex: true
+      - source_labels: [__meta_dockerswarm_container_label_prometheus_io_path]
+        target_label: __metrics_path__
+        regex: (.+)
+      - source_labels: [__address__, __meta_dockerswarm_container_label_prometheus_io_port]
+        target_label: __address__
+        regex: ([^:]+)(?::\d+)?;(\d+)
+        replacement: $1:$2

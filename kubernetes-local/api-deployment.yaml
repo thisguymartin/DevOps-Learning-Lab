@@ -1,0 +1,163 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-app
+  labels:
+    app: api-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: api-app
+  template:
+    metadata:
+      labels:
+        app: api-app
+    spec:
+      containers:
+      - name: api-app
+        image: httpd:alpine
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: api-content
+          mountPath: /usr/local/apache2/htdocs
+        env:
+        - name: API_VERSION
+          value: "v1.0"
+        - name: API_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: api-secret
+              key: token
+        resources:
+          requests:
+            memory: "32Mi"
+            cpu: "100m"
+          limits:
+            memory: "64Mi"
+            cpu: "200m"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      volumes:
+      - name: api-content
+        configMap:
+          name: api-content
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-service
+  labels:
+    app: api-app
+spec:
+  selector:
+    app: api-app
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  type: ClusterIP
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: api-content
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Kubernetes API Service</title>
+        <style>
+            body { 
+                font-family: 'Courier New', monospace; 
+                text-align: center; 
+                margin: 0;
+                background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+                color: #68d391;
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .container { 
+                padding: 50px; 
+                background: rgba(0,0,0,0.4);
+                border-radius: 15px;
+                border: 2px solid #68d391;
+                box-shadow: 0 0 20px rgba(104, 211, 145, 0.3);
+                max-width: 600px;
+            }
+            h1 { font-size: 3em; margin-bottom: 20px; }
+            .api-info { 
+                background: rgba(104, 211, 145, 0.1); 
+                padding: 20px; 
+                border-radius: 10px; 
+                margin: 20px 0;
+                border-left: 4px solid #68d391;
+                text-align: left;
+            }
+            .json {
+                background: rgba(0,0,0,0.5);
+                padding: 15px;
+                border-radius: 8px;
+                margin: 15px 0;
+                font-size: 14px;
+                text-align: left;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>🔧 API Service</h1>
+            <div class="api-info">
+                <h3>Kubernetes Features</h3>
+                <p><strong>Replicas:</strong> 2</p>
+                <p><strong>Health Checks:</strong> Configured</p>
+                <p><strong>Resource Limits:</strong> Applied</p>
+                <p><strong>Secrets:</strong> Environment variables</p>
+            </div>
+            
+            <div class="json">
+    {<br>
+    &nbsp;&nbsp;"service": "api-app",<br>
+    &nbsp;&nbsp;"version": "v1.0",<br>
+    &nbsp;&nbsp;"status": "healthy",<br>
+    &nbsp;&nbsp;"kubernetes": true,<br>
+    &nbsp;&nbsp;"replicas": 2,<br>
+    &nbsp;&nbsp;"features": [<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;"deployments",<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;"services",<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;"configmaps",<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;"secrets",<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;"ingress"<br>
+    &nbsp;&nbsp;]<br>
+    }
+            </div>
+            
+            <p>API service managed by Kubernetes</p>
+        </div>
+    </body>
+    </html>
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: api-secret
+type: Opaque
+data:
+  token: YWJjZGVmZ2hpams=  # base64 encoded "abcdefghijk"

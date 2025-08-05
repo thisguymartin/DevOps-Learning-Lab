@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Monitoring Demo - Web App</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            text-align: center; 
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container { 
+            padding: 60px; 
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        h1 { font-size: 3.5em; margin-bottom: 20px; }
+        .metrics { 
+            background: rgba(255,255,255,0.2); 
+            padding: 20px; 
+            border-radius: 15px; 
+            margin: 20px 0;
+        }
+        .link { color: #ffeaa7; text-decoration: none; }
+        .link:hover { text-decoration: underline; }
+    </style>
+    <script>
+        // Simple metrics simulation
+        function generateLoad() {
+            // Simulate some CPU activity
+            let start = Date.now();
+            while (Date.now() - start < 100) {
+                Math.random();
+            }
+        }
+        
+        setInterval(generateLoad, 5000);
+        
+        // Update page views counter
+        let views = parseInt(localStorage.getItem('pageViews') || '0');
+        views++;
+        localStorage.setItem('pageViews', views.toString());
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Monitoring Demo</h1>
+        <div class="metrics">
+            <h3>Web Application</h3>
+            <p><strong>Status:</strong> Running</p>
+            <p><strong>Server:</strong> NGINX</p>
+            <p><strong>Port:</strong> 8081</p>
+            <p><strong>Page Views:</strong> <span id="views"></span></p>
+        </div>
+        <div class="metrics">
+            <h3>Monitoring Stack</h3>
+            <p>📈 <a href="http://localhost:9090" class="link">Prometheus</a> - Metrics & Alerting</p>
+            <p>📊 <a href="http://localhost:3000" class="link">Grafana</a> - Dashboards</p>
+            <p>🔔 <a href="http://localhost:9093" class="link">AlertManager</a> - Alert Management</p>
+            <p>💻 <a href="http://localhost:9100/metrics" class="link">Node Exporter</a> - System Metrics</p>
+            <p>🐳 <a href="http://localhost:8080" class="link">cAdvisor</a> - Container Metrics</p>
+        </div>
+        <p>This app is being monitored by Prometheus!</p>
+    </div>
+    
+    <script>
+        document.getElementById('views').textContent = localStorage.getItem('pageViews') || '1';
+    </script>
+</body>
+</html>

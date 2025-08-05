@@ -1,0 +1,88 @@
+version: '3.8'
+
+services:
+  # Web application behind firewall
+  web-app:
+    image: nginx:alpine
+    container_name: secure-web-app
+    ports:
+      - "8080:80"
+    volumes:
+      - ./web-content:/usr/share/nginx/html:ro
+    networks:
+      - secure-network
+    restart: unless-stopped
+
+  # API service with restricted access
+  api-service:
+    image: httpd:alpine
+    container_name: secure-api
+    ports:
+      - "8081:80"
+    volumes:
+      - ./api-content:/usr/local/apache2/htdocs:ro
+    networks:
+      - secure-network
+    restart: unless-stopped
+
+  # Database (no external ports)
+  database:
+    image: postgres:13-alpine
+    container_name: secure-db
+    environment:
+      POSTGRES_DB: testdb
+      POSTGRES_USER: testuser
+      POSTGRES_PASSWORD: testpass123
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - secure-network
+    restart: unless-stopped
+    # No ports exposed to host
+
+  # SSH server for testing firewall rules
+  ssh-server:
+    image: linuxserver/openssh-server:latest
+    container_name: ssh-server
+    environment:
+      PUID: 1000
+      PGID: 1000
+      TZ: UTC
+      SUDO_ACCESS: false
+      PASSWORD_ACCESS: true
+      USER_PASSWORD: sshpass123
+      USER_NAME: testuser
+    ports:
+      - "2222:2222"
+    networks:
+      - secure-network
+    restart: unless-stopped
+
+  # Monitoring service
+  monitor:
+    image: prom/node-exporter:latest
+    container_name: secure-monitor
+    ports:
+      - "9100:9100"
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    networks:
+      - secure-network
+    restart: unless-stopped
+
+volumes:
+  db-data:
+
+networks:
+  secure-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.30.0.0/16

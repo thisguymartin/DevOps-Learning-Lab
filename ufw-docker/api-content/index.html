@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Secure API Service</title>
+    <style>
+        body { 
+            font-family: 'Courier New', monospace; 
+            text-align: center; 
+            margin: 0;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: #ecf0f1;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container { 
+            padding: 50px; 
+            background: rgba(0,0,0,0.4);
+            border-radius: 15px;
+            border: 2px solid #3498db;
+            box-shadow: 0 0 20px rgba(52, 152, 219, 0.3);
+            max-width: 600px;
+        }
+        h1 { font-size: 3em; margin-bottom: 20px; color: #3498db; }
+        .api-info { 
+            background: rgba(52, 152, 219, 0.1); 
+            padding: 20px; 
+            border-radius: 10px; 
+            margin: 20px 0;
+            border-left: 4px solid #3498db;
+            text-align: left;
+        }
+        .json {
+            background: rgba(0,0,0,0.5);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-size: 14px;
+            text-align: left;
+        }
+        .status { color: #2ecc71; }
+        .warning { color: #e74c3c; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Secure API</h1>
+        
+        <div class="api-info">
+            <h3>API Security Status</h3>
+            <p><strong>Firewall:</strong> <span class="status">Protected</span></p>
+            <p><strong>Network:</strong> <span class="status">Isolated</span></p>
+            <p><strong>Access:</strong> <span class="warning">Controlled</span></p>
+            <p><strong>Monitoring:</strong> <span class="status">Active</span></p>
+        </div>
+        
+        <div class="json">
+{<br>
+&nbsp;&nbsp;"service": "secure-api",<br>
+&nbsp;&nbsp;"status": "protected",<br>
+&nbsp;&nbsp;"security_features": {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"firewall": "ufw",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"network_isolation": true,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"port_restrictions": true,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"access_control": "enabled"<br>
+&nbsp;&nbsp;},<br>
+&nbsp;&nbsp;"timestamp": "<span id="timestamp"></span>",<br>
+&nbsp;&nbsp;"allowed_ports": [8080, 8081, 2222, 9100],<br>
+&nbsp;&nbsp;"blocked_ports": "all_others"<br>
+}
+        </div>
+        
+        <div class="api-info">
+            <h3>🔍 Security Testing</h3>
+            <p>• Test port access restrictions</p>
+            <p>• Monitor firewall logs</p>
+            <p>• Verify network isolation</p>
+            <p>• Check intrusion detection</p>
+        </div>
+        
+        <p>This API is secured with UFW firewall rules</p>
+    </div>
+    
+    <script>
+        function updateTimestamp() {
+            document.getElementById('timestamp').textContent = new Date().toISOString();
+        }
+        updateTimestamp();
+        setInterval(updateTimestamp, 1000);
+    </script>
+</body>
+</html>
